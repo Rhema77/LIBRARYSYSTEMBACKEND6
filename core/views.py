@@ -21,7 +21,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework import generics
 from django.contrib.auth.models import User
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, TransactionDetailSerializer, BookSerializer, UserSerializer
 
 from rest_framework import status
 
@@ -42,10 +42,18 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 
 from rest_framework.generics import ListAPIView
-from .serializers import TransactionDetailSerializer
 from django.utils import timezone
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def all_transactions(request):
+    if not request.user.is_staff:  # restrict to staff/admin
+        return Response({"detail": "Not authorized"}, status=403)
 
+    transactions = Transaction.objects.all().select_related("member", "book")
+    serializer = TransactionDetailSerializer(transactions, many=True)
+    return Response(serializer.data)
+# just added
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def borrowed_transactions(request):
