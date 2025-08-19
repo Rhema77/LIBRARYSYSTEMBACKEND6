@@ -30,6 +30,7 @@ from datetime import timedelta
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),  # <-- ensures Authorization: Bearer <token>
 }
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,9 +44,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "fallback-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ["Rhema1.pythonanywhere.com"]
+# DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
+ALLOWED_HOSTS = ["rhema1.pythonanywhere.com", "127.0.0.1", "localhost", ]
 
 
 # Application definition
@@ -75,7 +76,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-      
+        # 'rest_framework.permissions.AllowAny',  # Update this later for security
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
@@ -91,7 +92,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True #for dev only
+CORS_ALLOW_ALL_ORIGINS = False #for dev only
+CORS_ALLOWED_ORIGINS = [
+    "https://librarysystemfrontend-2.vercel.app",
+    "https://librarysystem-two.vercel.app",
+    "http://localhost:3000",
+    "https://rhema1.pythonanywhere.com",
+    
+]
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'library_system.urls'
 
@@ -148,10 +157,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+TIME_ZONE = 'Africa/Lagos'
 USE_TZ = True
 
 
