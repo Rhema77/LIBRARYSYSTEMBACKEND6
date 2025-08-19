@@ -146,6 +146,7 @@ from rest_framework import serializers
 from .models import Transaction
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
+
     book_title = serializers.CharField(source="book.title", read_only=True)
     borrower_username = serializers.CharField(source="member.user.username", read_only=True)
     borrower_email = serializers.EmailField(source="member.user.email", read_only=True)
