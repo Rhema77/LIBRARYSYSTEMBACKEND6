@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from .models import Book, Transaction, Member
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializers import TransactionDetailSerializer, RegisterSerializer, BookSerializer
+# from .serializers import TransactionSerializer, TransactionDetailSerializer
 from django.utils import timezone
 from datetime import timedelta
 from rest_framework import status
@@ -21,10 +21,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework import generics
 from django.contrib.auth.models import User
-
 from .serializers import RegisterSerializer, TransactionDetailSerializer, BookSerializer, UserSerializer
-
-
 from rest_framework import status
 
 from .models import Member
@@ -45,10 +42,6 @@ from django.contrib.auth import authenticate
 
 from rest_framework.generics import ListAPIView
 from django.utils import timezone
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
-from .models import Transaction
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])

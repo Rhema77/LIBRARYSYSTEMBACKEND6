@@ -1,77 +1,16 @@
-# # core/serializers.py
-
-# from rest_framework import serializers
-# from django.contrib.auth.models import User
-# from .models import Book, Member, Transaction
-
-
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username']
-
-# class RegisterSerializer(serializers.ModelSerializer):
-#     email = serializers.EmailField(required=True, allow_blank=False)
-
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'password']
-#         extra_kwargs = {'password': {'write_only': True}}
-
-#     # ✅ Add this create method here
-#     def create(self, validated_data):
-#         # Check if username already exists
-#         if User.objects.filter(username=validated_data['username']).exists():
-#             raise serializers.ValidationError({"error": "Username already exists"})
-#         # Check if email already exists
-#         if User.objects.filter(email=validated_data['email']).exists():
-#             raise serializers.ValidationError({"error": "Email already registered"})
-        
-#         # Create the user
-#         user = User.objects.create_user(
-#             username=validated_data['username'],
-#             email=validated_data['email'],
-#             password=validated_data['password']
-#         )
-#         # Also create a related Member record
-#         Member.objects.create(user=user)
-#         return user
-
-# class BookSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Book
-#         fields = '__all__'
-
-# class TransactionDetailSerializer(serializers.ModelSerializer):
-#     book = BookSerializer()
-#     member = MemberSerializer()  # or MemberSerializer()
-
-#     class Meta:
-#         model = Transaction
-#         fields = '__all__'
 # core/serializers.py
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Book, Member, Transaction
 
-# --- User Serializer ---
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
 # just added email
-
-# --- Member Serializer ---
-class MemberSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username')  # expose related User's username
-
-    class Meta:
-        model = Member
-        fields = ['id', 'username', 'max_books']  # add more fields if needed
-
-# --- Register Serializer ---
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, allow_blank=False)
 
@@ -80,21 +19,25 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
+    # ✅ Add this create method here
     def create(self, validated_data):
+        # Check if username already exists
         if User.objects.filter(username=validated_data['username']).exists():
             raise serializers.ValidationError({"error": "Username already exists"})
+        # Check if email already exists
         if User.objects.filter(email=validated_data['email']).exists():
             raise serializers.ValidationError({"error": "Email already registered"})
         
+        # Create the user
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password']
         )
+        # Also create a related Member record
         Member.objects.create(user=user)
         return user
 
-# --- Book Serializer ---
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
@@ -146,7 +89,6 @@ from rest_framework import serializers
 from .models import Transaction
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
-
     book_title = serializers.CharField(source="book.title", read_only=True)
     borrower_username = serializers.CharField(source="member.user.username", read_only=True)
     borrower_email = serializers.EmailField(source="member.user.email", read_only=True)
