@@ -45,6 +45,32 @@ from django.contrib.auth import authenticate
 
 from rest_framework.generics import ListAPIView
 from django.utils import timezone
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+from .models import Transaction
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def debug_all_transactions(request):
+    """
+    Return all transactions with basic member and book info for debugging.
+    """
+    transactions = Transaction.objects.all()
+    data = []
+    for t in transactions:
+        member_username = t.member.user.username if t.member and t.member.user else "Unknown"
+        book_title = t.book.title if t.book else "Unknown"
+        data.append({
+            "id": t.id,
+            "book": book_title,
+            "member": member_username,
+            "borrow_date": t.borrow_date,
+            "due_date": t.due_date,
+            "return_date": t.return_date,
+            "fine": t.fine,
+        })
+    return Response(data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

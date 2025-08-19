@@ -15,10 +15,12 @@ urlpatterns = [
     path('books/<int:pk>/update/', BookUpdateAPI.as_view(), name='api-book-update'),
     path('books/<int:pk>/delete/', BookDeleteAPI.as_view(), name='api-book-delete'),
     path('borrow/', BorrowBookAPI.as_view(), name='api-borrow'),
+
     path('transactions/all/', all_transactions, name='all-transactions'),
     # just added
     path('transactions/borrowed/', borrowed_transactions, name='borrowed-transactions'),
     path('transactions/', UserTransactionHistoryAPI.as_view(), name='api-transactions'),
+    path('return/', ReturnBookAPI.as_view(), name='api-return'),
     path('pay-fine/', PayFineAPI.as_view(), name='api-pay-fine'),
     path('dashboard/', UserDashboardAPI.as_view(), name='api-dashboard'),
     path('overdue/', OverdueBooksAPI.as_view(), name='api-overdue'),
