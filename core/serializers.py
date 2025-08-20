@@ -90,7 +90,7 @@ from .models import Transaction
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
     book_title = serializers.CharField(source="book.title", read_only=True)
-    borrower_username = serializers.CharField(source="member.user.username", read_only=True)
+    book_author = serializers.CharField(source="book.author", read_only=True)
     borrower_email = serializers.EmailField(source="member.user.email", read_only=True)
 
     class Meta:
@@ -98,7 +98,7 @@ class TransactionDetailSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "book_title",
-            "borrower_username",
+            "book_author",
             "borrower_email",
             "borrow_date",
             "due_date",
