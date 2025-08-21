@@ -43,8 +43,8 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransactionSerializer(serializers.ModelSerializer):
-    borrower_username = serializers.CharField(source="member.user.username", read_only=True)
-    borrower_email = serializers.CharField(source="member.user.email", read_only=True)
+    borrower_username = serializers.SerializerMethodField()
+    borrower_email = serializers.SerializerMethodField()
     book_title = serializers.CharField(source="book.title", read_only=True)
 
     class Meta:
@@ -61,6 +61,32 @@ class TransactionSerializer(serializers.ModelSerializer):
             "borrower_email",
             "book_title",
         ]
+
+    def get_borrower_username(self, obj):
+        return obj.member.user.username if obj.member and obj.member.user else "Unknown"
+
+    def get_borrower_email(self, obj):
+        return obj.member.user.email if obj.member and obj.member.user else "-"
+
+# class TransactionSerializer(serializers.ModelSerializer):
+#     borrower_username = serializers.CharField(source="member.user.username", read_only=True)
+#     borrower_email = serializers.CharField(source="member.user.email", read_only=True)
+#     book_title = serializers.CharField(source="book.title", read_only=True)
+
+#     class Meta:
+#         model = Transaction
+#         fields = [
+#             "id",
+#             "book",
+#             "member",
+#             "borrow_date",
+#             "due_date",
+#             "return_date",
+#             "fine",
+#             "borrower_username",
+#             "borrower_email",
+#             "book_title",
+#         ]
 
         
 # class TransactionSerializer(serializers.ModelSerializer):
