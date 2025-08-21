@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 from .models import Book, Member, Transaction
 
 
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -45,10 +43,12 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransactionSerializer(serializers.ModelSerializer):
+    member = serializers.StringRelatedField()  # Or a nested serializer
+    book = serializers.StringRelatedField()    # Or a nested serializer
+
     class Meta:
         model = Transaction
-        fields = '__all__'
-
+        fields = "__all__"
 
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
