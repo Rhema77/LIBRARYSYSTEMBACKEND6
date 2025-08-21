@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from .models import Book, Transaction, Member
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-# from .serializers import TransactionSerializer, TransactionDetailSerializer
+from .serializers import TransactionSerializer, TransactionDetailSerializer
 from django.utils import timezone
 from datetime import timedelta
 from rest_framework import status

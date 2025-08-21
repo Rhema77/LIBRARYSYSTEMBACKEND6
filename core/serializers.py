@@ -6,6 +6,7 @@ from .models import Book, Member, Transaction
 
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -43,50 +44,12 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
-# class TransactionDetailSerializer(serializers.ModelSerializer):
-#     book = BookSerializer()
-#     member = serializers.StringRelatedField()  # or MemberSerializer()
-    
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
 
-#     class Meta:
-#         model = Transaction
-#         fields = '__all__'
 
-# class TransactionDetailSerializer(serializers.ModelSerializer):
-#     member = serializers.StringRelatedField()  # or use a custom MemberSerializer if you want more info
-#     book = BookSerializer(read_only=True)
-
-#     class Meta:
-#         model = Transaction
-#         fields = ["id", "member", "book", "borrow_date", "return_date", "due_date", "fine", "extended"]
-## just added new TransactionDetailSerializer
-
-# class TransactionDetailSerializer(serializers.ModelSerializer):
-    
-#     borrower = serializers.SerializerMethodField()
-#     book = BookSerializer(read_only=True)
-
-#     class Meta:
-#         model = Transaction
-#         fields = [
-#             "id", 
-#             "borrower",   # 👈 custom field
-#             "book", 
-#             "borrow_date", 
-#             "return_date", 
-#             "due_date", 
-#             "fine", 
-#             "extended"
-#         ]
-
-#     def get_borrower(self, obj):
-#         if obj.member and obj.member.user:
-#             return obj.member.user.username
-#         return None
-##just added this
-
-from rest_framework import serializers
-from .models import Transaction
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
     book_title = serializers.CharField(source="book.title", read_only=True)

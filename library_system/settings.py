@@ -44,8 +44,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "fallback-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
+DEBUG = False
+# DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 ALLOWED_HOSTS = ["rhema1.pythonanywhere.com", "127.0.0.1", "localhost", ]
 
 
@@ -92,7 +92,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True #for dev only
+# CORS_ALLOW_ALL_ORIGINS = True #for dev only
 CORS_ALLOWED_ORIGINS = [
     "https://librarysystemfrontend-2.vercel.app",
     "https://librarysystem-two.vercel.app",
