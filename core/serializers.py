@@ -43,12 +43,31 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransactionSerializer(serializers.ModelSerializer):
-    member = serializers.StringRelatedField()  # Or a nested serializer
-    book = serializers.StringRelatedField()    # Or a nested serializer
+    borrower_username = serializers.CharField(source="member.user.username", read_only=True)
+    borrower_email = serializers.CharField(source="member.user.email", read_only=True)
+    book_title = serializers.CharField(source="book.title", read_only=True)
 
     class Meta:
         model = Transaction
-        fields = "__all__"
+        fields = [
+            "id",
+            "book",
+            "member",
+            "borrow_date",
+            "due_date",
+            "return_date",
+            "fine",
+            "borrower_username",
+            "borrower_email",
+            "book_title",
+        ]
+
+        
+# class TransactionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Transaction
+#         fields = '__all__'
+
 
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
