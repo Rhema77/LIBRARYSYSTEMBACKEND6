@@ -79,7 +79,8 @@ def all_transactions(request):
 @permission_classes([IsAuthenticated])
 def borrowed_transactions(request):
     user = request.user
-    member = get_object_or_404(Member, user=user)
+    # member = get_object_or_404(Member, user=user)
+    member, _ = Member.objects.get_or_create(user=user)
     transactions = Transaction.objects.filter(member=member, return_date__isnull=True)
 
     serializer = TransactionDetailSerializer(transactions, many=True)
@@ -212,7 +213,8 @@ class BorrowBookAPI(APIView):
         if book.available_copies < 1:
             return Response({"error": "Book not available"}, status=400)
 
-        member = Member.objects.get(user=request.user)
+        # member = Member.objects.get(user=request.user)
+        member, _ = Member.objects.get_or_create(user=request.user)
 
         # Check if already borrowed
         if Transaction.objects.filter(member=member, book=book, return_date__isnull=True).exists():
@@ -242,7 +244,9 @@ class ReturnBookAPI(APIView):
     def post(self, request):
         transaction_id = request.data.get("transaction_id")
         try:
-            transaction = Transaction.objects.get(id=transaction_id, member__user=request.user)
+            # transaction = Transaction.objects.get(id=transaction_id, member__user=request.user)
+            member, _ = Member.objects.get_or_create(user=request.user)
+            transaction = get_object_or_404(Transaction, id=transaction_id, member=member)
         except Transaction.DoesNotExist:
             return Response({"error": "Transaction not found"}, status=404)
 
@@ -270,7 +274,9 @@ class UserTransactionHistoryAPI(generics.ListAPIView):
     serializer_class = TransactionDetailSerializer
 
     def get_queryset(self):
-        member = Member.objects.get(user=self.request.user)
+        # member = Member.objects.get(user=self.request.user)
+        member, _ = Member.objects.get_or_create(user=self.request.user)
+
         return Transaction.objects.filter(member=member).order_by('-borrow_date')
 
 class PayFineAPI(APIView):
@@ -296,7 +302,9 @@ class UserDashboardAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        member = Member.objects.get(user=request.user)
+        # member = Member.objects.get(user=request.user)
+        member, _ = Member.objects.get_or_create(user=request.user)
+
         borrowed = Transaction.objects.filter(member=member, return_date__isnull=True)
         total_fines = Transaction.objects.filter(member=member).aggregate(total=models.Sum("fine"))['total'] or 0
 
@@ -311,7 +319,9 @@ class OverdueBooksAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        member = Member.objects.get(user=request.user)
+        # member = Member.objects.get(user=request.user)
+        member, _ = Member.objects.get_or_create(user=request.user)
+
         today = timezone.now().date()
         overdue = Transaction.objects.filter(
             member=member,
