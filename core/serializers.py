@@ -43,24 +43,32 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransactionSerializer(serializers.ModelSerializer):
-    borrower_username = serializers.SerializerMethodField()
-    borrower_email = serializers.SerializerMethodField()
-    book_title = serializers.CharField(source="book.title", read_only=True)
-
+    borrower_username = serializers.CharField(source='borrower.user.username', read_only=True)
+    borrower_email = serializers.CharField(source='borrower.user.email', read_only=True)
+    
     class Meta:
         model = Transaction
-        fields = [
-            "id",
-            "book",
-            "member",
-            "borrow_date",
-            "due_date",
-            "return_date",
-            "fine",
-            "borrower_username",
-            "borrower_email",
-            "book_title",
-        ]
+        fields = '__all__'  # or list all fields + these two
+
+# class TransactionSerializer(serializers.ModelSerializer):
+#     borrower_username = serializers.SerializerMethodField()
+#     borrower_email = serializers.SerializerMethodField()
+#     book_title = serializers.CharField(source="book.title", read_only=True)
+
+#     class Meta:
+#         model = Transaction
+#         fields = [
+#             "id",
+#             "book",
+#             "member",
+#             "borrow_date",
+#             "due_date",
+#             "return_date",
+#             "fine",
+#             "borrower_username",
+#             "borrower_email",
+#             "book_title",
+#         ]
 
     def get_borrower_username(self, obj):
         return obj.member.user.username if obj.member and obj.member.user else "Unknown"
@@ -100,6 +108,7 @@ class TransactionDetailSerializer(serializers.ModelSerializer):
     book_title = serializers.CharField(source="book.title", read_only=True)
     book_author = serializers.CharField(source="book.author", read_only=True)
     borrower_email = serializers.EmailField(source="member.user.email", read_only=True)
+    borrower_username = serializers.EmailField(source="member.user.username", read_only=True)
 
     class Meta:
         model = Transaction
@@ -107,6 +116,7 @@ class TransactionDetailSerializer(serializers.ModelSerializer):
             "id",
             "book_title",
             "book_author",
+            "borrower_username",
             "borrower_email",
             "borrow_date",
             "due_date",
